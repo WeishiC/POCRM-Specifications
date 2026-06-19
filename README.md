@@ -7,6 +7,8 @@ This repository contains code used for the paper _Design Specification of Partia
 - `BLRM.R` contains code to simulate the operating characteristics of the Bayesian Logistic Regression Model (Riviere et al, 2014)
 - `SFD.R` contains code to simulate the operating characteristics of the Surface-Free Design (Mozgunov et al, 2020)
 
+The folder `RData` contains the scenarios used for the simulation studies.
+
 ## Dependencies
 This project is written in R. Key R packages used (as seen in the code) include:
 - dfcrm
@@ -16,8 +18,6 @@ This project is written in R. Key R packages used (as seen in the code) include:
 - nnet
 - combinat
 - tidyverse
-
-The folder `RData` contains the scenarios used for the simulation studies.
 
 ## References
 - Wages, N.A., Conaway, M.R. and O'Quigley, J. *Dose-finding design for multi-drug combinations*. Clinical Trials 2011; 8: 380-389.
