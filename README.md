@@ -18,7 +18,6 @@ This project is written in R. Key R packages used (as seen in the code) include:
 - BOIN
 - rjags
 - nnet
-- combinat
 - tidyverse
 
 ## References
