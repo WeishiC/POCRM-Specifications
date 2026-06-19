@@ -1,0 +1,24 @@
+## Design specifications for the POCRM on two-dimensional grids
+This repository contains code used for the paper _Design Specification of Partial Ordering Continual Reassessment Method Based on Consistency Conditions_ by Weishi Chen and Pavel Mozgunov.
+
+## Functions
+- `BLRM.R` contains code to simulate the operating characteristics of the Bayesian Logistic Regression Model (Riviere et al, 2014)
+- `SFD.R` contains code to simulate the operating characteristics of the Surface-Free Design (Mozgunov et al, 2020)
+
+## Dependencies
+This project is written in R. Key R packages used (as seen in the code) include:
+- dfcrm
+- pocrm
+- BOIN
+- rjags
+- nnet
+- combinat
+- tidyverse
+
+## References
+- Mozgunov P, Gasparini M, and Jaki T. *A surface-free design for phase I dual-agent combination trials*. SMMR 2020; 29: 3093-109.
+- Riviere M.K., Yuan Y., Dubois F., and Zohar S. *A Bayesian dose-finding design for drug combination clinical trials based on the logistic model*. PharmStats 2014; 13: 247-57.
+- Lin R and Yin G. *Bayesian optimal interval design for dose finding in drug-combination trials*. SMMR 2017; 26(5): 2155-67.
+
+##  License
+MIT License. See `LICENSE` file for details.
