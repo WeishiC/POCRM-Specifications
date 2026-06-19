@@ -50,4 +50,6 @@ ListOrder <- function(dim, nsims=5000) {
 
 
 # to obtain all 42 orderings on the 3x3 grid
+# Each row gives a possible ordering
+# Within each row, the numbers 1, 2, ..., k corresponds to d_{1,1}, d_{2,1}, ..., d_{c,1}, d_{1,2}, ..., d_{c,2}, ..., d_{c,r}.
 ListOrder(dim=c(3, 3))
