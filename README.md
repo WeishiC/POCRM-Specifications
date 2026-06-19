@@ -2,6 +2,7 @@
 This repository contains code used for the paper _Design Specification of Partial Ordering Continual Reassessment Method Based on Consistency Conditions_ by Weishi Chen and Pavel Mozgunov.
 
 ## Functions
+- `ListOrder.R` contains code to list all possible orderings on any given two-dimensional grids.
 - `POCRM.R` contains code to simulate the operating characteristics of the two-stage Partial Ordering Continual Reassessment Method (Wages et al, 2011)
 - `BLRM.R` contains code to simulate the operating characteristics of the Bayesian Logistic Regression Model (Riviere et al, 2014)
 - `SFD.R` contains code to simulate the operating characteristics of the Surface-Free Design (Mozgunov et al, 2020)
