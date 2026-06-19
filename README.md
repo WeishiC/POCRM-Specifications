@@ -17,6 +17,8 @@ This project is written in R. Key R packages used (as seen in the code) include:
 - combinat
 - tidyverse
 
+The folder `RData` contains the scenarios used for the simulation studies.
+
 ## References
 - Wages, N.A., Conaway, M.R. and O'Quigley, J. *Dose-finding design for multi-drug combinations*. Clinical Trials 2011; 8: 380-389.
 - Mozgunov P, Gasparini M, and Jaki T. *A surface-free design for phase I dual-agent combination trials*. SMMR 2020; 29: 3093-109.
