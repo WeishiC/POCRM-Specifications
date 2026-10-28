@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Weishi Chen and Pavel Mozgunov" />
+
+<meta name="date" content="2026-10-27" />
+
+<title>Getting started with POCRM design specification</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Getting started with POCRM design
+specification</h1>
+<h4 class="author">Weishi Chen and Pavel Mozgunov</h4>
+<h4 class="date">2026-10-27</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#getting-the-code" id="toc-getting-the-code">Getting the
+code</a></li>
+<li><a href="#ordering-specification" id="toc-ordering-specification">Ordering Specification</a>
+<ul>
+<li><a href="#listing-all-orderings" id="toc-listing-all-orderings">Listing all orderings</a></li>
+<li><a href="#scenario-specific-ordering-specification" id="toc-scenario-specific-ordering-specification">Scenario-specific
+ordering specification</a></li>
+<li><a href="#scenario-agnostic-ordering-specification" id="toc-scenario-agnostic-ordering-specification">Scenario-agnostic
+ordering specification</a></li>
+</ul></li>
+<li><a href="#skeleton-calibration" id="toc-skeleton-calibration">Skeleton Calibration</a>
+<ul>
+<li><a href="#initial-skeleton" id="toc-initial-skeleton">Initial
+skeleton</a></li>
+<li><a href="#condition-3-crm-consistency" id="toc-condition-3-crm-consistency">Condition 3: CRM
+consistency</a></li>
+<li><a href="#condition-2-likelihood-comparison" id="toc-condition-2-likelihood-comparison">Condition 2: likelihood
+comparison</a></li>
+</ul></li>
+<li><a href="#design-evaluation" id="toc-design-evaluation">Design
+Evaluation</a>
+<ul>
+<li><a href="#operating-characteristics" id="toc-operating-characteristics">Operating Characteristics</a></li>
+<li><a href="#asymptotic-behaviour" id="toc-asymptotic-behaviour">Asymptotic behaviour</a>
+<ul>
+<li><a href="#references" id="toc-references">References</a></li>
+<li><a href="#r-session-info" id="toc-r-session-info">R Session
+Info</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>The code in the <a href="https://github.com/WeishiC/POCRM-Specifications">POCRM-Specifications</a>
+repository has been created to support the design of phase I dual-agent
+combination trials using the Partial Ordering Continual Reassessment
+Method (POCRM) [1]. The POCRM extends the Continual Reassessment Method
+(CRM) [2] to situations where the toxicity ordering of some dose
+combinations is unknown. It requires the trial team to specify a set of
+plausible complete orderings of the combinations and a toxicity skeleton
+before the trial starts. These two choices determine whether the design
+is <em>consistent</em>, i.e., whether it selects the true maximum
+tolerated combination (MTC) with probability one as the sample size
+grows, and they have a large impact on its performance at realistic
+sample sizes [3].</p>
+<p>The code supports all the steps required to specify a POCRM design
+based on the consistency conditions derived in [3]:</p>
+<ol style="list-style-type: decimal">
+<li>listing all possible orderings of the combinations;</li>
+<li>selecting a small set of orderings, either for a given set of
+toxicity scenarios (<em>scenario-specific</em>) or for any scenario
+(<em>scenario-agnostic</em>);</li>
+<li>checking and calibrating the toxicity skeleton against the
+consistency conditions;</li>
+<li>evaluating the operating characteristics of the resulting design by
+simulation.</li>
+</ol>
+<p>Let’s consider a phase I trial combining two drugs, A and B, each
+with three dose levels. The nine combinations <span class="math inline">\(\tilde d_{i,j}=(a_i,b_j)\)</span>, <span class="math inline">\(i,j=1,2,3\)</span>, form a <span class="math inline">\(3\times3\)</span> grid:</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th><span class="math inline">\(a_1\)</span></th>
+<th><span class="math inline">\(a_2\)</span></th>
+<th><span class="math inline">\(a_3\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(b_3\)</span></td>
+<td><span class="math inline">\(\tilde d_{1,3}\)</span></td>
+<td><span class="math inline">\(\tilde d_{2,3}\)</span></td>
+<td><span class="math inline">\(\tilde d_{3,3}\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(b_2\)</span></td>
+<td><span class="math inline">\(\tilde d_{1,2}\)</span></td>
+<td><span class="math inline">\(\tilde d_{2,2}\)</span></td>
+<td><span class="math inline">\(\tilde d_{3,2}\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(b_1\)</span></td>
+<td><span class="math inline">\(\tilde d_{1,1}\)</span></td>
+<td><span class="math inline">\(\tilde d_{2,1}\)</span></td>
+<td><span class="math inline">\(\tilde d_{3,1}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Throughout, the combinations are indexed <span class="math inline">\(1,\ldots,9\)</span> in the order <span class="math inline">\((\tilde d_{1,1}, \tilde d_{2,1}, \tilde d_{3,1},
+\tilde d_{1,2}, \ldots, \tilde d_{3,3})\)</span>, i.e., the level of
+drug A changes fastest. A toxicity scenario is a vector of nine true
+toxicity probabilities in this order, and an ordering is a vector of
+combination indices, from the least to the most toxic. The target
+toxicity level (TTL) is <span class="math inline">\(\theta_0=0.3\)</span>. The nine scenarios below
+cover all possible locations of a single MTC on the grid; they are
+scenarios 1-9 in Table S1 of the Supplementary Materials of [3].</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># true toxicity probabilities, combinations ordered (d11, d21, d31, d12, ..., d33)</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>scen <span class="ot">&lt;-</span> <span class="fu">rbind</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="fu">c</span>(<span class="fl">0.30</span>,<span class="fl">0.35</span>,<span class="fl">0.40</span>, <span class="fl">0.45</span>,<span class="fl">0.50</span>,<span class="fl">0.55</span>, <span class="fl">0.60</span>,<span class="fl">0.65</span>,<span class="fl">0.70</span>),</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>  <span class="fu">c</span>(<span class="fl">0.25</span>,<span class="fl">0.30</span>,<span class="fl">0.50</span>, <span class="fl">0.35</span>,<span class="fl">0.45</span>,<span class="fl">0.55</span>, <span class="fl">0.40</span>,<span class="fl">0.60</span>,<span class="fl">0.65</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>  <span class="fu">c</span>(<span class="fl">0.10</span>,<span class="fl">0.20</span>,<span class="fl">0.30</span>, <span class="fl">0.15</span>,<span class="fl">0.25</span>,<span class="fl">0.35</span>, <span class="fl">0.40</span>,<span class="fl">0.45</span>,<span class="fl">0.50</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>  <span class="fu">c</span>(<span class="fl">0.20</span>,<span class="fl">0.25</span>,<span class="fl">0.35</span>, <span class="fl">0.30</span>,<span class="fl">0.40</span>,<span class="fl">0.50</span>, <span class="fl">0.45</span>,<span class="fl">0.55</span>,<span class="fl">0.60</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="fu">c</span>(<span class="fl">0.15</span>,<span class="fl">0.20</span>,<span class="fl">0.35</span>, <span class="fl">0.25</span>,<span class="fl">0.30</span>,<span class="fl">0.40</span>, <span class="fl">0.45</span>,<span class="fl">0.50</span>,<span class="fl">0.55</span>),</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="fu">c</span>(<span class="fl">0.01</span>,<span class="fl">0.03</span>,<span class="fl">0.05</span>, <span class="fl">0.10</span>,<span class="fl">0.15</span>,<span class="fl">0.30</span>, <span class="fl">0.20</span>,<span class="fl">0.25</span>,<span class="fl">0.35</span>),</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>  <span class="fu">c</span>(<span class="fl">0.01</span>,<span class="fl">0.10</span>,<span class="fl">0.15</span>, <span class="fl">0.05</span>,<span class="fl">0.20</span>,<span class="fl">0.25</span>, <span class="fl">0.30</span>,<span class="fl">0.35</span>,<span class="fl">0.40</span>),</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>  <span class="fu">c</span>(<span class="fl">0.05</span>,<span class="fl">0.20</span>,<span class="fl">0.35</span>, <span class="fl">0.10</span>,<span class="fl">0.25</span>,<span class="fl">0.40</span>, <span class="fl">0.15</span>,<span class="fl">0.30</span>,<span class="fl">0.45</span>),</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>  <span class="fu">c</span>(<span class="fl">0.01</span>,<span class="fl">0.03</span>,<span class="fl">0.07</span>, <span class="fl">0.05</span>,<span class="fl">0.15</span>,<span class="fl">0.20</span>, <span class="fl">0.10</span>,<span class="fl">0.25</span>,<span class="fl">0.30</span>))</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>TTL <span class="ot">&lt;-</span> <span class="fl">0.3</span></span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co"># labels of the combinations, used in the output below</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>cnames <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;(&quot;</span>, <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">3</span>), <span class="st">&quot;,&quot;</span>, <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">each =</span> <span class="dv">3</span>), <span class="st">&quot;)&quot;</span>)</span></code></pre></div>
+<p>The full set of 19 scenarios used in [3], which also covers two and
+three MTCs, is stored in the <code>RData</code> folder of the
+repository.</p>
+</div>
+<div id="getting-the-code" class="section level1">
+<h1>Getting the code</h1>
+<p>The functions are provided as <code>R</code> scripts. After cloning
+or downloading the repository, they are loaded with
+<code>source()</code>. They depend on the <code>dfcrm</code> [4],
+<code>pocrm</code> [5], <code>nnet</code>, <code>dplyr</code> and
+<code>combinat</code> packages, which are available from CRAN.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># load R packages</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_bw</span>()) <span class="co"># sets up plotting theme</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co"># functions from the POCRM-Specifications repository</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;ListOrder.R&quot;</span>)      <span class="co"># ListOrder()</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;GetOrder.R&quot;</span>)       <span class="co"># get.order()</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;GetOrderScen.R&quot;</span>)   <span class="co"># get.order.scen()</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;CheckCRM.R&quot;</span>)       <span class="co"># CheckCRM()</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;POCRM.R&quot;</span>)          <span class="co"># pocrm.sim()</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;FindGroup.R&quot;</span>)      <span class="co"># FindGroup()</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;CheckPOCRM.R&quot;</span>)     <span class="co"># CheckPOCRM()</span></span></code></pre></div>
+</div>
+<div id="ordering-specification" class="section level1">
+<h1>Ordering Specification</h1>
+<div id="listing-all-orderings" class="section level2">
+<h2>Listing all orderings</h2>
+<p>Monotonicity of each single drug implies only a <em>partial</em>
+ordering of the combinations. For example, <span class="math inline">\(\tilde d_{1,1}\to\tilde d_{2,1}\to\tilde
+d_{3,1}\)</span> is known, but the order of <span class="math inline">\(\tilde d_{2,1}\)</span> and <span class="math inline">\(\tilde d_{1,2}\)</span> is not. A
+<em>complete</em> ordering is an ordering of all nine combinations that
+respects the partial ordering. The function <code>ListOrder()</code>
+lists all complete orderings for a grid of any dimension:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>orderings <span class="ot">&lt;-</span> <span class="fu">ListOrder</span>(<span class="at">dim =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">dim</span>(orderings)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="do">## [1] 42  9</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="fu">head</span>(orderings)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="do">##      d1 d2 d3 d4 d5 d6 d7 d8 d9</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="do">## [1,]  1  2  3  4  5  6  7  8  9</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="do">## [2,]  1  2  3  4  5  7  6  8  9</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="do">## [3,]  1  2  3  4  5  7  8  6  9</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="do">## [4,]  1  2  3  4  7  5  6  8  9</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="do">## [5,]  1  2  3  4  7  5  8  6  9</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="do">## [6,]  1  2  4  3  5  6  7  8  9</span></span></code></pre></div>
+</div>
+<div id="scenario-specific-ordering-specification" class="section level2">
+<h2>Scenario-specific ordering specification</h2>
+<p>A key result of [3] is that the POCRM can only be consistent under a
+scenario if the included orderings contain at least one ordering from
+the <em>correct ordering group</em> of that scenario. An ordering
+belongs to the correct group if it places the MTC in its correct
+position and all combinations less toxic than the MTC before it. The
+orderings in the correct group need not be exactly correct: combinations
+below the MTC can be in any order among themselves.</p>
+<p>The function <code>get.order()</code> searches for <code>S</code>
+orderings that cover the correct group under every scenario in
+<code>all.scen</code>. It draws <code>S</code> orderings at random until
+the coverage condition is met, up to <code>max.sim</code> draws, and
+returns <code>NULL</code> if no consistent set is found:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;Rdata/scen3x3.RData&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">24601</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>scen.spec <span class="ot">&lt;-</span> <span class="fu">get.order</span>(<span class="at">max.sim =</span> <span class="fl">1e+4</span>, <span class="at">all.scen =</span> scen, <span class="at">all.orderings =</span> orderings,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>                       <span class="at">TTL =</span> TTL, <span class="at">S =</span> <span class="dv">3</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>scen.spec</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="do">##      d1 d2 d3 d4 d5 d6 d7 d8 d9</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="do">## [1,]  1  2  4  5  3  6  7  8  9</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="do">## [2,]  1  2  4  7  3  5  8  6  9</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="do">## [3,]  1  2  4  7  5  8  3  6  9</span></span></code></pre></div>
+<p>If <code>NULL</code> is returned, a larger <code>S</code> can be
+tried. The argument <code>order.fix</code> forces given orderings into
+the selection, which is useful if the clinical team considers some
+orderings particularly plausible.</p>
+<p>The returned orderings are rows of <code>orderings</code>. To compare
+different choices, it is convenient to work with their row numbers:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>row_id <span class="ot">&lt;-</span> <span class="cf">function</span>(sel, all) <span class="fu">apply</span>(sel, <span class="dv">1</span>, <span class="cf">function</span>(o) <span class="fu">which</span>(<span class="fu">apply</span>(all, <span class="dv">1</span>, <span class="cf">function</span>(a) <span class="fu">all</span>(a <span class="sc">==</span> o))))</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>ord.spec <span class="ot">&lt;-</span> <span class="fu">row_id</span>(scen.spec, orderings)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>ord.spec</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="do">## [1] 11 18 21</span></span></code></pre></div>
+<p>The set of orderings recommended in [3] for the 19 scenarios is
+orderings 11, 16 and 23. Since <code>get.order()</code> is a random
+search, other consistent sets of the same size may be returned. Among
+several consistent sets, [3] recommends the one with the largest number
+of correct groups covered per ordering (<span class="math inline">\(N_\mathrm{consis}\)</span>).</p>
+</div>
+<div id="scenario-agnostic-ordering-specification" class="section level2">
+<h2>Scenario-agnostic ordering specification</h2>
+<p>In practice, the true scenario is unknown. Although the number of
+possible scenarios is infinite, the correct ordering group only depends
+on the <em>order-scenario</em>, i.e., on the MTC and the set of
+combinations less toxic than it, and there are finitely many
+order-scenarios. The function <code>get.order.scen()</code> lists one
+toxicity scenario per order-scenario, together with a set of candidate
+orderings rich enough for the selection:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>order.scen <span class="ot">&lt;-</span> <span class="fu">get.order.scen</span>(<span class="at">dim =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>), <span class="at">TTL =</span> TTL)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">nrow</span>(order.scen<span class="sc">$</span>OrderScen)   <span class="co"># number of order-scenarios</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="do">## [1] 30</span></span></code></pre></div>
+<p>Applying <code>get.order()</code> to the order-scenarios gives
+orderings that cover the correct group under <em>any</em> scenario:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">24601</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>scen.agn <span class="ot">&lt;-</span> <span class="fu">get.order</span>(<span class="at">all.scen =</span> order.scen<span class="sc">$</span>OrderScen,</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>                      <span class="at">all.orderings =</span> orderings,</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>                      <span class="at">TTL =</span> TTL, <span class="at">S =</span> <span class="dv">6</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>ord.agn <span class="ot">&lt;-</span> <span class="fu">row_id</span>(scen.agn, orderings)</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>ord.agn</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="do">## [1]  4 11 16 24 35 38</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>orderings[ord.agn,]</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="do">##      d1 d2 d3 d4 d5 d6 d7 d8 d9</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="do">## [1,]  1  2  3  4  7  5  6  8  9</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="do">## [2,]  1  2  4  5  3  6  7  8  9</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="do">## [3,]  1  2  4  5  7  8  3  6  9</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="do">## [4,]  1  4  2  3  5  7  8  6  9</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="do">## [5,]  1  4  2  7  5  3  6  8  9</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="do">## [6,]  1  4  7  2  3  5  6  8  9</span></span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co"># Wages 6 orderings</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>ord.wages <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">7</span>, <span class="dv">19</span>, <span class="dv">24</span>, <span class="dv">36</span>, <span class="dv">42</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>orderings[ord.wages,]</span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a><span class="do">##      d1 d2 d3 d4 d5 d6 d7 d8 d9</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="do">## [1,]  1  2  3  4  5  6  7  8  9</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="do">## [2,]  1  2  4  3  5  7  6  8  9</span></span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a><span class="do">## [3,]  1  2  4  7  5  3  6  8  9</span></span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a><span class="do">## [4,]  1  4  2  3  5  7  8  6  9</span></span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a><span class="do">## [5,]  1  4  2  7  5  3  8  6  9</span></span>
+<span id="cb7-26"><a href="#cb7-26" tabindex="-1"></a><span class="do">## [6,]  1  4  7  2  5  8  3  6  9</span></span></code></pre></div>
+<p>For comparison, the six orderings recommended by Wages and Conaway
+[6] are <code>ord.wages</code> (orderings 1, 7, 19, 24, 36, 42), and the
+scenario-agnostic 6 orderings in [3] are <code>ord.agn</code> (orderings
+4, 11, 16, 24, 35, 38). The Wages 6 orderings do not cover the correct
+group of scenario 5, where the MTC <span class="math inline">\(\tilde
+d_{2,2}\)</span> is in the middle of the grid, so the POCRM with these
+orderings cannot be consistent under that scenario.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># check: which of the scenario-agnostic and Wages orderings are in the correct group of scenario 5?</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>nu <span class="ot">&lt;-</span> <span class="fu">which</span>(scen[<span class="dv">5</span>, ] <span class="sc">==</span> TTL); below <span class="ot">&lt;-</span> <span class="fu">which</span>(scen[<span class="dv">5</span>, ] <span class="sc">&lt;</span> TTL)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>in_group5 <span class="ot">&lt;-</span> <span class="cf">function</span>(m) orderings[m, <span class="fu">length</span>(below) <span class="sc">+</span> <span class="dv">1</span>] <span class="sc">==</span> nu <span class="sc">&amp;&amp;</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="fu">setequal</span>(orderings[m, <span class="fu">seq_along</span>(below)], below)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="fu">sapply</span>(ord.agn, in_group5)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="do">## [1] FALSE  TRUE  TRUE FALSE FALSE FALSE</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="fu">sapply</span>(ord.wages, in_group5)</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="do">## [1] FALSE FALSE FALSE FALSE FALSE FALSE</span></span></code></pre></div>
+</div>
+</div>
+<div id="skeleton-calibration" class="section level1">
+<h1>Skeleton Calibration</h1>
+<div id="initial-skeleton" class="section level2">
+<h2>Initial skeleton</h2>
+<p>Covering the correct group is necessary but not sufficient for
+consistency. The toxicity skeleton must also satisfy two further
+conditions (Theorem 2 in [3]):</p>
+<ul>
+<li><strong>Condition 2</strong>: under every included incorrect
+ordering, the likelihood must favour an included correct ordering at the
+allocations of patients that the design can reach;</li>
+<li><strong>Condition 3</strong>: the CRM must be consistent under every
+included correct ordering.</li>
+</ul>
+<p>A convenient starting point is the skeleton from
+<code>getprior()</code> in the <code>dfcrm</code> package [4]. Here we
+use the skeleton of Section 2 in [3]:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>alpha0 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.20</span>, <span class="fl">0.30</span>, <span class="fl">0.40</span>, <span class="fl">0.45</span>, <span class="fl">0.50</span>, <span class="fl">0.54</span>, <span class="fl">0.59</span>, <span class="fl">0.64</span>)</span></code></pre></div>
+</div>
+<div id="condition-3-crm-consistency" class="section level2">
+<h2>Condition 3: CRM consistency</h2>
+<p>The function <code>CheckCRM()</code> checks the CRM consistency
+condition of Cheung and Chappell [7] under one ordering. It returns the
+values <span class="math inline">\(a_j=\log R_j/\log\alpha(j)\)</span>,
+the boundaries <span class="math inline">\(b_j\)</span> of the intervals
+<span class="math inline">\(H_j\)</span>, and whether the condition
+holds:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># check for all 42 orderings</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>crm5 <span class="ot">&lt;-</span> <span class="fu">CheckCRM_all</span>(<span class="at">R =</span> scen[<span class="dv">5</span>, ], <span class="at">alpha =</span> alpha0, <span class="at">ordering =</span> orderings, <span class="at">TTL =</span> TTL)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>crm5</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="do">##     t MTC_position holds n_violations</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="do">## 1  11            4  TRUE            0</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="do">## 2  12            4  TRUE            0</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="do">## 3  13            4  TRUE            0</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="do">## 4  14            4  TRUE            0</span></span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a><span class="do">## 5  15            4  TRUE            0</span></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="do">## 6  16            4  TRUE            0</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a><span class="do">## 7  27            4 FALSE            1</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a><span class="do">## 8  28            4 FALSE            1</span></span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a><span class="do">## 9  29            4 FALSE            1</span></span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a><span class="do">## 10 30            4 FALSE            1</span></span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a><span class="do">## 11 31            4 FALSE            1</span></span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="do">## 12 32            4 FALSE            1</span></span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co"># check for ordering 27</span></span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="fu">CheckCRM</span>(<span class="at">R =</span> scen[<span class="dv">5</span>, ], <span class="at">alpha =</span> alpha0, <span class="at">ordering =</span> orderings[<span class="dv">27</span>,], <span class="at">TTL =</span> TTL, <span class="at">cnames=</span>cnames)</span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a><span class="do">## $holds</span></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="do">## [1] FALSE</span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a><span class="do">## $MTC_position</span></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a><span class="do">## [1] 4</span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a><span class="do">## $a</span></span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a><span class="do">## (1,1) (1,2) (2,1) (2,2) (3,1) (3,2) (1,3) (2,3) (3,3) </span></span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a><span class="do">## 0.824 0.861 1.337 1.314 1.315 1.322 1.296 1.314 1.340 </span></span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a><span class="do">## $H</span></span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a><span class="do">##   i lower upper</span></span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a><span class="do">## 1 1  -Inf 0.628</span></span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a><span class="do">## 2 2 0.628 0.867</span></span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a><span class="do">## 3 3 0.867 1.148</span></span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a><span class="do">## 4 4 1.148 1.408</span></span>
+<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a><span class="do">## 5 5 1.408 1.619</span></span>
+<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a><span class="do">## 6 6 1.619 1.843</span></span>
+<span id="cb10-37"><a href="#cb10-37" tabindex="-1"></a><span class="do">## 7 7 1.843 2.113</span></span>
+<span id="cb10-38"><a href="#cb10-38" tabindex="-1"></a><span class="do">## 8 8 2.113 2.483</span></span>
+<span id="cb10-39"><a href="#cb10-39" tabindex="-1"></a><span class="do">## 9 9 2.483   Inf</span></span>
+<span id="cb10-40"><a href="#cb10-40" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb10-41"><a href="#cb10-41" tabindex="-1"></a><span class="do">## $violations</span></span>
+<span id="cb10-42"><a href="#cb10-42" tabindex="-1"></a><span class="do">##   position combination    R     a              requirement bound</span></span>
+<span id="cb10-43"><a href="#cb10-43" tabindex="-1"></a><span class="do">## 1        2       (1,2) 0.25 0.861 below MTC: a_i &gt; b_{i+1} 0.867</span></span></code></pre></div>
+<p>Condition 3 only needs to hold for the correct orderings that are
+included in the POCRM. The function <code>FindGroups()</code> finds the
+included correct orderings under each scenario:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>groups <span class="ot">&lt;-</span> <span class="fu">FindGroups</span>(<span class="at">all.scen=</span>scen[<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>,], <span class="at">all.orderings=</span>orderings[ord.agn,], <span class="at">TTL=</span>TTL, <span class="at">ids=</span>ord.agn)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co"># included correct orderings under scenario 5</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>groups[[<span class="dv">5</span>]]</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="do">## [1] 11 16</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="fu">CheckCRM_all</span>(<span class="at">R=</span>scen[<span class="dv">5</span>,], <span class="at">alpha=</span>alpha0, <span class="at">orderings=</span>orderings[groups[[<span class="dv">5</span>]],], <span class="at">TTL=</span>TTL, <span class="at">ids=</span>groups[[<span class="dv">5</span>]])</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="do">##    t MTC_position holds n_violations</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="do">## 1 11            4  TRUE            0</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="do">## 2 16            4  TRUE            0</span></span></code></pre></div>
+</div>
+<div id="condition-2-likelihood-comparison" class="section level2">
+<h2>Condition 2: likelihood comparison</h2>
+<p>Condition 2 compares the limiting likelihoods of an incorrect
+ordering <span class="math inline">\(\mathcal O_m\)</span> and an
+included correct ordering <span class="math inline">\(\mathcal
+O_t\)</span> over the allocations of patients that <span class="math inline">\(\mathcal O_m\)</span> can produce asymptotically,
+i.e., allocations on the set <span class="math inline">\(\mathcal
+S(m;\mathbf R)\)</span> of misordered combinations, the combinations
+adjacent to them, and the MTC. Each allocation is written as <span class="math inline">\(\boldsymbol\eta=(1-u)\boldsymbol\zeta+u\,\mathbf
+e_\nu\)</span>, where <span class="math inline">\(u\)</span> is the
+proportion of patients at the MTC and <span class="math inline">\(\boldsymbol\zeta\)</span> is an allocation over
+the other combinations in <span class="math inline">\(\mathcal
+S(m;\mathbf R)\)</span>. The condition is checked over a grid of <span class="math inline">\(u\)</span> and <span class="math inline">\(\boldsymbol\zeta\)</span> (Section 4.3 of
+[3]).</p>
+<p>The function <code>CheckPOCRM()</code> performs this check for every
+included incorrect ordering under one scenario. It returns, for each
+pair, the smallest value of the left-hand side of Equation (2) in [3]
+over the grid, the allocation where it occurs, and whether the condition
+holds within the tolerance:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># check for scenario 5 </span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>cond2 <span class="ot">&lt;-</span> <span class="fu">CheckPOCRM</span>(<span class="at">skeleton=</span>alpha0, <span class="at">R=</span>scen[<span class="dv">5</span>,], <span class="at">orderings=</span>orderings[ord.agn, ], <span class="at">ids =</span> ord.agn,</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>                    <span class="at">TTL =</span> TTL, <span class="at">cnames =</span> cnames, <span class="at">seed =</span> <span class="dv">24601</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>cond2</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="do">##    m           T           W correct best_t  min_LHS holds</span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="do">## 1  4 (3,1),(1,3) (2,1),(1,2)   11,16     11 -0.00321 FALSE</span></span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="do">## 2 24       (3,1)       (2,1)   11,16     11 -0.00347 FALSE</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="do">## 3 35       (1,3)       (2,1)   11,16     11 -0.00272 FALSE</span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="do">## 4 38 (3,1),(1,3) (2,1),(1,2)   11,16     11 -0.00339 FALSE</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="do">##                           worst_eta</span></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="do">## 1   (2,1)=0.45 (3,1)=0.45 (2,2)=0.1</span></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a><span class="do">## 2 (2,1)=0.405 (3,1)=0.495 (2,2)=0.1</span></span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a><span class="do">## 3               (2,1)=0.3 (2,2)=0.7</span></span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a><span class="do">## 4               (2,1)=0.3 (2,2)=0.7</span></span></code></pre></div>
+<p>The function <code>CheckPOCRM_one()</code> gives the details for a
+single incorrect ordering, including the sets <span class="math inline">\(\mathcal T\)</span> and <span class="math inline">\(\mathcal W\)</span> of Definition 3 in [3], the
+restriction applied to the grid, and optionally all allocations
+checked:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># ordering 4: an incorrect ordering under scenario 5, included in ord.agn</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>c2 <span class="ot">&lt;-</span> <span class="fu">CheckPOCRM_one</span>(alpha0, scen[<span class="dv">5</span>, ], orderings[ord.agn, ], <span class="at">m =</span> <span class="dv">4</span>, <span class="at">ids =</span> ord.agn,</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>                     <span class="at">TTL =</span> TTL, <span class="at">cnames =</span> cnames, <span class="at">return_grid =</span> <span class="cn">TRUE</span>, <span class="at">seed =</span> <span class="dv">24601</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>c2[<span class="fu">c</span>(<span class="st">&quot;T&quot;</span>, <span class="st">&quot;W&quot;</span>, <span class="st">&quot;restriction&quot;</span>, <span class="st">&quot;holds&quot;</span>, <span class="st">&quot;min_LHS&quot;</span>)]</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="do">## $T</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="do">## [1] &quot;(3,1),(1,3)&quot;</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="do">## $W</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a><span class="do">## [1] &quot;(2,1),(1,2)&quot;</span></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="do">## $restriction</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="do">## [1] &quot;zeta(2,1) = 0 =&gt; zeta(3,1) = 0; zeta(1,2) = 0 =&gt; zeta(1,3) = 0&quot;</span></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="do">## $holds</span></span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="do">## [1] FALSE</span></span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a><span class="do">## $min_LHS</span></span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="do">## [1] -0.00321</span></span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a>c2<span class="sc">$</span>by_t</span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a><span class="do">##      t  min_LHS holds                       worst_eta</span></span>
+<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a><span class="do">## t11 11 -0.00321 FALSE (2,1)=0.45 (3,1)=0.45 (2,2)=0.1</span></span>
+<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a><span class="do">## t16 16 -0.01730 FALSE (2,1)=0.45 (3,1)=0.45 (2,2)=0.1</span></span></code></pre></div>
+<p>The returned grid shows where the condition fails. In particular,
+plotting the left-hand side against the proportion of patients at the
+MTC shows whether a violation only occurs at allocations the design
+rarely reaches, e.g., with few patients at the MTC:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> c2<span class="sc">$</span>grid</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>lhs_cols <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">&quot;^t&quot;</span>, <span class="fu">names</span>(g), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">data.frame</span>(<span class="at">u =</span> g<span class="sc">$</span>u_MTC, <span class="at">LHS =</span> <span class="fu">apply</span>(g[lhs_cols], <span class="dv">1</span>, max)), <span class="fu">aes</span>(u, LHS)) <span class="sc">+</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span> <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;proportion of patients at the MTC (u)&quot;</span>, <span class="at">y =</span> <span class="st">&quot;LHS of Equation (2)&quot;</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Condition 2 for ordering 4 under scenario 5&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>Empirically, the most effective way to fix a violation is to change
+the skeleton values directly involved, i.e., at the positions of the
+combinations in <span class="math inline">\(\mathcal S(m;\mathbf
+R)\)</span> under <span class="math inline">\(\mathcal O_m\)</span> and
+<span class="math inline">\(\mathcal O_t\)</span>, and to recheck
+Condition 3 afterwards.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>alpha.agn <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.17</span>, <span class="fl">0.26</span>, <span class="fl">0.32</span>, <span class="fl">0.37</span>, <span class="fl">0.38</span>, <span class="fl">0.40</span>, <span class="fl">0.41</span>, <span class="fl">0.42</span>, <span class="fl">0.48</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">subset</span>(<span class="fu">CheckCRM_all</span>(<span class="at">R=</span>scen[<span class="dv">5</span>,], <span class="at">alpha=</span>alpha.agn, <span class="at">orderings=</span>orderings[ord.agn,]), <span class="sc">!</span>holds)</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="do">## [1] t            MTC_position holds        n_violations</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="do">## &lt;0 rows&gt; (or 0-length row.names)</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>cond2.agn <span class="ot">&lt;-</span> <span class="fu">CheckPOCRM</span>(<span class="at">skeleton=</span>alpha.agn, <span class="at">R=</span>scen[<span class="dv">5</span>,], <span class="at">orderings=</span>orderings[ord.agn, ], </span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>                        <span class="at">ids =</span> ord.agn, <span class="at">TTL =</span> TTL, <span class="at">cnames =</span> cnames, <span class="at">seed =</span> <span class="dv">24601</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>cond2.agn</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="do">##    m           T           W correct best_t  min_LHS holds</span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="do">## 1  4 (3,1),(1,3) (2,1),(1,2)   11,16     11 5.47e-06  TRUE</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="do">## 2 24       (3,1)       (2,1)   11,16     16 2.48e-05  TRUE</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a><span class="do">## 3 35       (1,3)       (2,1)   11,16     11 2.48e-05  TRUE</span></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="do">## 4 38 (3,1),(1,3) (2,1),(1,2)   11,16     16 5.77e-05  TRUE</span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="do">##                             worst_eta</span></span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a><span class="do">## 1             (1,2)=0.005 (2,2)=0.995</span></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="do">## 2             (2,1)=0.005 (2,2)=0.995</span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a><span class="do">## 3             (2,1)=0.005 (2,2)=0.995</span></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a><span class="do">## 4 (2,1)=0.001 (3,1)=0.004 (2,2)=0.995</span></span></code></pre></div>
+<p>Note that the consistency conditions depend on the orderings
+included: a skeleton that is consistent for one set of orderings need
+not be consistent for another.</p>
+</div>
+</div>
+<div id="design-evaluation" class="section level1">
+<h1>Design Evaluation</h1>
+<div id="operating-characteristics" class="section level2">
+<h2>Operating Characteristics</h2>
+<p>The function <code>pocrm.sim()</code> simulates the two-stage POCRM
+[1].</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>scen <span class="ot">&lt;-</span> scen[<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>,]</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>x0 <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(scen)    <span class="co"># stage-1 escalation path: by rows, d11 -&gt; d21 -&gt; d31 -&gt; d12 -&gt; ...</span></span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>skel_matrix <span class="ot">&lt;-</span> <span class="cf">function</span>(alpha, ids) <span class="fu">getwm</span>(orderings[ids, , <span class="at">drop =</span> <span class="cn">FALSE</span>], alpha)</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>run_pcs <span class="ot">&lt;-</span> <span class="cf">function</span>(alpha, ids, <span class="at">n =</span> <span class="dv">60</span>, nsim) {</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>  <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(scen), <span class="cf">function</span>(s) {</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>    res <span class="ot">&lt;-</span> <span class="fu">pocrm.sim</span>(<span class="at">r =</span> scen[s, ], <span class="at">alpha =</span> <span class="fu">skel_matrix</span>(alpha, ids),</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>                     <span class="at">prior.o =</span> <span class="fu">rep</span>(<span class="dv">1</span> <span class="sc">/</span> <span class="fu">length</span>(ids), <span class="fu">length</span>(ids)), <span class="at">x0 =</span> x0,</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>                     <span class="at">stop =</span> n <span class="sc">+</span> <span class="dv">1</span>, <span class="at">n =</span> n, <span class="at">theta =</span> TTL, <span class="at">nsim =</span> nsim)</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>    <span class="fu">sum</span>(res<span class="sc">$</span>MTD.selection[<span class="fu">abs</span>(scen[s, ] <span class="sc">-</span> TTL) <span class="sc">&lt;</span> <span class="fl">1e-10</span>])   <span class="co"># proportion of correct selection</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>  })</span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>}</span></code></pre></div>
+<p>We compare the proportion of correct selection (PCS) at <span class="math inline">\(N=60\)</span> patients for the scenario-specific 3
+orderings and the Wages 6 orderings, both under the initial skeleton
+<span class="math inline">\(\boldsymbol\alpha^{(0)}\)</span>. The number
+of simulations is kept small here to keep the run time short; [3] uses
+<span class="math inline">\(10^4\)</span> simulations.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>pcs <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">scenario =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">2</span>)),</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>                  <span class="at">orderings =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;Scenario-specific 3&quot;</span>, <span class="st">&quot;Wages 6&quot;</span>), <span class="at">each =</span> <span class="dv">9</span>),</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>                  <span class="at">PCS =</span> <span class="fu">c</span>(<span class="fu">run_pcs</span>(alpha0, ord.spec, <span class="at">nsim=</span><span class="dv">200</span>), </span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>                          <span class="fu">run_pcs</span>(alpha0, ord.wages, <span class="at">nsim=</span><span class="dv">200</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>geo_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">exp</span>(<span class="fu">mean</span>(<span class="fu">log</span>(x)))</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>pcs_means <span class="ot">&lt;-</span> pcs <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(orderings) <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">arithmetic =</span> <span class="fu">mean</span>(PCS), <span class="at">geometric =</span> <span class="fu">geo_mean</span>(PCS))</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>pcs_means</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="do">## # A tibble: 2 × 3</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="do">##   orderings           arithmetic geometric</span></span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a><span class="do">##   &lt;chr&gt;                    &lt;dbl&gt;     &lt;dbl&gt;</span></span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="do">## 1 Scenario-specific 3      0.386     0.356</span></span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a><span class="do">## 2 Wages 6                  0.343     0.304</span></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>pcs_plot <span class="ot">&lt;-</span> <span class="fu">rbind</span>(pcs, <span class="fu">data.frame</span>(<span class="at">scenario =</span> <span class="st">&quot;Mean&quot;</span>, <span class="at">orderings =</span> pcs_means<span class="sc">$</span>orderings,</span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a>                                  <span class="at">PCS =</span> pcs_means<span class="sc">$</span>geometric))</span>
+<span id="cb18-13"><a href="#cb18-13" tabindex="-1"></a>pcs_plot<span class="sc">$</span>scenario <span class="ot">&lt;-</span> <span class="fu">factor</span>(pcs_plot<span class="sc">$</span>scenario, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="st">&quot;Mean&quot;</span>))</span>
+<span id="cb18-14"><a href="#cb18-14" tabindex="-1"></a><span class="fu">ggplot</span>(pcs_plot, <span class="fu">aes</span>(scenario, PCS, <span class="at">fill =</span> orderings)) <span class="sc">+</span></span>
+<span id="cb18-15"><a href="#cb18-15" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">&quot;dodge&quot;</span>) <span class="sc">+</span></span>
+<span id="cb18-16"><a href="#cb18-16" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">9.5</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>) <span class="sc">+</span></span>
+<span id="cb18-17"><a href="#cb18-17" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> <span class="fu">subset</span>(pcs_plot, scenario <span class="sc">==</span> <span class="st">&quot;Mean&quot;</span>),</span>
+<span id="cb18-18"><a href="#cb18-18" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.1f%%&quot;</span>, <span class="dv">100</span> <span class="sc">*</span> PCS)),</span>
+<span id="cb18-19"><a href="#cb18-19" tabindex="-1"></a>            <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.9</span>), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.4</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb18-20"><a href="#cb18-20" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> <span class="cf">function</span>(x) <span class="fu">paste0</span>(<span class="dv">100</span> <span class="sc">*</span> x, <span class="st">&quot;%&quot;</span>),</span>
+<span id="cb18-21"><a href="#cb18-21" tabindex="-1"></a>                     <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.08</span>))) <span class="sc">+</span></span>
+<span id="cb18-22"><a href="#cb18-22" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;scenario&quot;</span>, <span class="at">y =</span> <span class="st">&quot;PCS at N = 60&quot;</span>, <span class="at">fill =</span> <span class="st">&quot;orderings&quot;</span>,</span>
+<span id="cb18-23"><a href="#cb18-23" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Proportion of correct selection&quot;</span>,</span>
+<span id="cb18-24"><a href="#cb18-24" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">&quot;Mean: geometric mean across the nine scenarios&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" style="display: block; margin: auto;" /></p>
+<p>The difference is largest under scenario 5, where the Wages 6
+orderings do not include any ordering from the correct group. On
+average, the difference is smaller, since the two specifications perform
+similarly under the scenarios where both cover the correct group.</p>
+</div>
+<div id="asymptotic-behaviour" class="section level2">
+<h2>Asymptotic behaviour</h2>
+<p>Consistency is an asymptotic property, and it can be checked by
+simulation by increasing the sample size. Under a consistent
+specification, the PCS approaches 100% under every scenario; under an
+inconsistent one, it levels off below 100% under some scenarios. As the
+run time grows with the sample size, the chunk below is not evaluated in
+this vignette:</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>Ns <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">60</span>, <span class="dv">100</span>, <span class="dv">500</span>, <span class="dv">1000</span>, <span class="fl">1e+4</span>, <span class="fl">1e+5</span>, <span class="fl">1e+6</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>asym <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">N =</span> Ns, <span class="at">skeleton =</span> <span class="fu">c</span>(<span class="st">&quot;alpha0&quot;</span>, <span class="st">&quot;alpha.agn&quot;</span>))</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>asym<span class="sc">$</span>PCS5 <span class="ot">&lt;-</span> <span class="fu">mapply</span>(<span class="cf">function</span>(N, sk) {</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>  <span class="fu">run_pcs</span>(<span class="fu">get</span>(<span class="fu">as.character</span>(sk)), ord.agn, <span class="at">n =</span> N, <span class="at">nsim =</span> <span class="dv">500</span>)[<span class="dv">5</span>]</span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>}, asym<span class="sc">$</span>N, asym<span class="sc">$</span>skeleton)</span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="fu">ggplot</span>(asym, <span class="fu">aes</span>(N, PCS5, <span class="at">colour =</span> skeleton)) <span class="sc">+</span> <span class="fu">geom_line</span>() <span class="sc">+</span> <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;PCS under scenario 5&quot;</span>, <span class="at">title =</span> <span class="st">&quot;PCS vs. sample size&quot;</span>)</span></code></pre></div>
+<p>The functions <code>BOIN::get.oc.comb()</code> [8],
+<code>SFD.sim()</code> and <code>BLRM.sim()</code> (in
+<code>SFD.R</code> and <code>BLRM.R</code>) simulate the comparator
+designs used in [3] in the same way.</p>
+<div id="references" class="section level3">
+<h3>References</h3>
+<p>[1] Wages N.A., Conaway M.R. and O’Quigley J., Clin Trials. 2011;
+8:380-389<br />
+[2] O’Quigley J., Pepe M. and Fisher L., Biometrics. 1990;
+46:33-48<br />
+[3] Chen W. and Mozgunov P., Design specification of partial ordering
+continual reassessment method based on consistency conditions, Stat Med.
+(under review)<br />
+[4] Cheung K., dfcrm: Dose-Finding by the Continual Reassessment Method,
+R package<br />
+[5] Wages N.A. and Varhegyi N., pocrm: Dose Finding in Drug Combination
+Phase I Trials Using PO-CRM, R package<br />
+[6] Wages N.A. and Conaway M.R., Pharm Stat. 2013; 12(4):217-224<br />
+[7] Cheung Y.K. and Chappell R., Biometrics. 2002; 58:671-674<br />
+[8] Yan F. et al., J Stat Softw. 2020; 94(13):1-32</p>
+</div>
+<div id="r-session-info" class="section level3">
+<h3>R Session Info</h3>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="do">## R version 4.2.1 (2022-06-23 ucrt)</span></span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="do">## Platform: x86_64-w64-mingw32/x64 (64-bit)</span></span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="do">## Running under: Windows 10 x64 (build 26200)</span></span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="do">## Matrix products: default</span></span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a><span class="do">## locale:</span></span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a><span class="do">## [1] LC_COLLATE=English_United Kingdom.utf8 </span></span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a><span class="do">## [2] LC_CTYPE=English_United Kingdom.utf8   </span></span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a><span class="do">## [3] LC_MONETARY=English_United Kingdom.utf8</span></span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a><span class="do">## [4] LC_NUMERIC=C                           </span></span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a><span class="do">## [5] LC_TIME=English_United Kingdom.utf8    </span></span>
+<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb20-15"><a href="#cb20-15" tabindex="-1"></a><span class="do">## attached base packages:</span></span>
+<span id="cb20-16"><a href="#cb20-16" tabindex="-1"></a><span class="do">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
+<span id="cb20-17"><a href="#cb20-17" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb20-18"><a href="#cb20-18" tabindex="-1"></a><span class="do">## other attached packages:</span></span>
+<span id="cb20-19"><a href="#cb20-19" tabindex="-1"></a><span class="do">## [1] combinat_0.0-8 pocrm_0.13     nnet_7.3-19    dfcrm_0.2-2.1  ggplot2_3.5.1 </span></span>
+<span id="cb20-20"><a href="#cb20-20" tabindex="-1"></a><span class="do">## [6] dplyr_1.1.4   </span></span>
+<span id="cb20-21"><a href="#cb20-21" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb20-22"><a href="#cb20-22" tabindex="-1"></a><span class="do">## loaded via a namespace (and not attached):</span></span>
+<span id="cb20-23"><a href="#cb20-23" tabindex="-1"></a><span class="do">##  [1] highr_0.10        pillar_1.9.0      bslib_0.6.1       compiler_4.2.1   </span></span>
+<span id="cb20-24"><a href="#cb20-24" tabindex="-1"></a><span class="do">##  [5] jquerylib_0.1.4   tools_4.2.1       digest_0.6.34     jsonlite_1.8.8   </span></span>
+<span id="cb20-25"><a href="#cb20-25" tabindex="-1"></a><span class="do">##  [9] evaluate_0.23     lifecycle_1.0.4   tibble_3.2.1      gtable_0.3.6     </span></span>
+<span id="cb20-26"><a href="#cb20-26" tabindex="-1"></a><span class="do">## [13] pkgconfig_2.0.3   rlang_1.1.3       cli_3.6.2         rstudioapi_0.15.0</span></span>
+<span id="cb20-27"><a href="#cb20-27" tabindex="-1"></a><span class="do">## [17] yaml_2.3.8        xfun_0.41         fastmap_1.1.1     withr_3.0.0      </span></span>
+<span id="cb20-28"><a href="#cb20-28" tabindex="-1"></a><span class="do">## [21] knitr_1.45        generics_0.1.3    vctrs_0.6.5       sass_0.4.8       </span></span>
+<span id="cb20-29"><a href="#cb20-29" tabindex="-1"></a><span class="do">## [25] grid_4.2.1        tidyselect_1.2.1  glue_1.7.0        R6_2.5.1         </span></span>
+<span id="cb20-30"><a href="#cb20-30" tabindex="-1"></a><span class="do">## [29] fansi_1.0.6       rmarkdown_2.25    farver_2.1.1      magrittr_2.0.3   </span></span>
+<span id="cb20-31"><a href="#cb20-31" tabindex="-1"></a><span class="do">## [33] scales_1.3.0      htmltools_0.5.7   colorspace_2.1-0  labeling_0.4.3   </span></span>
+<span id="cb20-32"><a href="#cb20-32" tabindex="-1"></a><span class="do">## [37] utf8_1.2.4        munsell_0.5.0     cachem_1.0.8</span></span></code></pre></div>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
